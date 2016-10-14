@@ -6,8 +6,8 @@ export default class App extends Component {
   render() {
     return (
       <div>
-        {/* <Note>Hello World!</Note> */}
-        <Checkbox />
+        <Note>Hello World!</Note>
+        {/* <Checkbox /> */}
       </div>
     );
   }

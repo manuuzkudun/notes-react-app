@@ -1,13 +1,20 @@
 import React, { Component } from 'react';
 
-var MessageBox = React.createClass({
-  getInitialState: function() {
-    return {checked: true};
-  },
-  handleCheck: function() {
+export default class Checkbox extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      checked: true
+    };
+    this.handleCheck = this.handleCheck.bind(this);
+  }
+
+  handleCheck() {
     this.setState({checked: !this.state.checked})
-  },
-  render: function() {
+  }
+
+  render() {
     let msg = this.state.checked ? "Checked" : "Unchecked";
     return (
       <div>
@@ -16,6 +23,5 @@ var MessageBox = React.createClass({
       </div>
     );
   }
-});
 
-export default MessageBox;
+};
