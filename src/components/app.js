@@ -1,9 +1,12 @@
 import React, { Component } from 'react';
+import Note from './Note';
 
 export default class App extends Component {
   render() {
     return (
-      <div>React simple starter</div>
+      <div>
+        <Note>Hello World!</Note>
+      </div>
     );
   }
 }
