@@ -12,4 +12,4 @@ ReactDOM.render(
   <Provider store={createStoreWithMiddleware(reducers)}>
     <Board count={10}/>
   </Provider>
-  , document.querySelector('.container'));
+  , document.querySelector('#react-container'));

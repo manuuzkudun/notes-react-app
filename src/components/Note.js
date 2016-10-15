@@ -7,11 +7,25 @@ export default class Note extends Component {
     this.state = {
       editing: false
     };
+
     this.edit = this.edit.bind(this);
     this.save = this.save.bind(this);
     this.remove = this.remove.bind(this);
     this.renderDisplay = this.renderDisplay.bind(this);
     this.renderForm = this.renderForm.bind(this);
+    this.randomBetween = this.randomBetween.bind(this);
+  }
+
+  randomBetween(min,max) {
+    return (min + Math.ceil(Math.random() * max) );
+  }
+
+  componentWillMount() {
+    this.style = {
+      right: `${this.randomBetween(0,window.innerWidth -150)}px`,
+      top: `${this.randomBetween(0,window.innerHeight -150)}px`,
+      transform: `rotate(${this.randomBetween(-15,15)}deg)`
+    };
   }
 
   edit(){
@@ -29,7 +43,7 @@ export default class Note extends Component {
 
   renderDisplay() {
     return (
-      <div className="note">
+      <div className="note" style={this.style}>
         <p>{this.props.children}</p>
         <span>
           <button className="btn btn-primary glyphicon glyphicon-pencil" onClick={this.edit}/>
@@ -41,7 +55,7 @@ export default class Note extends Component {
 
   renderForm() {
     return(
-      <div className="note">
+      <div className="note" style={this.style}>
         <textarea ref="newText" defaultValue={this.props.children} className="form-control"></textarea>
         <button onClick={this.save} className="btn btn-success btn-sm glyphicon glyphicon-floppy-disk" />
       </div>

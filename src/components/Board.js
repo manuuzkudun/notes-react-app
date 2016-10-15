@@ -5,17 +5,15 @@ export default class Board extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      notes: [
-        'Finish Resume',
-        'Call family',
-        'Buy onions',
-        'Clean bathroom'
-      ]
+      notes: []
     };
+    this.add = this.add.bind(this);
     this.update = this.update.bind(this);
     this.remove = this.remove.bind(this);
     this.eachNote = this.eachNote.bind(this);
+    this.nextId = this.nextId.bind(this);
   }
+
   static propTypes = {
    count: (props,propName) => {
      if (typeof props[propName] !== 'number') {
@@ -27,9 +25,23 @@ export default class Board extends Component {
    }
   }
 
+  nextId() {
+    this.uniqueId = this.uniqueId || 0;
+    return this.uniqueId++;
+  }
+
+  add(text) {
+    let arr = this.state.notes;
+    arr.push({
+      id: this.nextId(),
+      note: text
+    });
+    this.setState(arr);
+  }
+
   update(newText,i) {
     let arr = this.state.notes;
-    arr[i] = newText;
+    arr[i].note = newText;
     this.setState({notes: arr});
   }
 
@@ -41,11 +53,11 @@ export default class Board extends Component {
 
   eachNote(note,i) {
     return (
-      <Note key={i}
+      <Note key={note.id}
         index={i}
         onChange={this.update}
         onRemove={this.remove}>
-        {note}
+        {note.note}
       </Note>
     );
   }
@@ -54,7 +66,10 @@ export default class Board extends Component {
     return (
         <div className="board"> {
           this.state.notes.map( this.eachNote )
-        }</div>
+        }
+        <button onClick={this.add.bind(null,'New Note')} className="btn btn-sm btn-success glyphicon glyphicon-plus" />
+        </div>
+
     );
   }
 }
