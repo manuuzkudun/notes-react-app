@@ -30,6 +30,17 @@ export default class Board extends Component {
     return this.uniqueId++;
   }
 
+  componentWillMount() {
+    var self = this;
+    if(this.props.count) {
+      $.getJSON("http://baconipsum.com/api/?type=all-meat&sentences=" +
+        this.props.count + "&start-with-lorem=1&callback=?", results => {
+          results[0].split('. ')
+            .forEach( sentence => self.add(sentence.substring(0,40)) )
+      });
+    }
+  }
+
   add(text) {
     let arr = this.state.notes;
     arr.push({

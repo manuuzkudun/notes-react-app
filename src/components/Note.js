@@ -20,6 +20,10 @@ export default class Note extends Component {
     return (min + Math.ceil(Math.random() * max) );
   }
 
+  componentDidMount() {
+    $(ReactDOM.findDOMNode(this)).draggable();
+  }
+
   componentWillMount() {
     this.style = {
       right: `${this.randomBetween(0,window.innerWidth -150)}px`,
