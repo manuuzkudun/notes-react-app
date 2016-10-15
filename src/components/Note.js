@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 
 export default class Note extends Component {
   constructor(props) {
@@ -18,13 +19,12 @@ export default class Note extends Component {
   }
 
   save(){
-    let value = this.refs.newText.getDOMNode().value;
-    alert(val);
+    this.props.onChange(ReactDOM.findDOMNode(this.refs.newText).value,this.props.index);
     this.setState({editing: false});
   }
 
   remove(){
-    alert('Removing note')
+    this.props.onRemove(this.props.index);
   }
 
   renderDisplay() {
