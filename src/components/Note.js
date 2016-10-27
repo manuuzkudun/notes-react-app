@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import { connector } from '../store';
 
-export default class Note extends Component {
+class Note extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -37,14 +38,13 @@ export default class Note extends Component {
   }
 
   save(){
-    this.props.onChange(ReactDOM.findDOMNode(this.refs.newText).value,this.props.index);
+    this.props.editNote(this.props.index, ReactDOM.findDOMNode(this.refs.newText).value);
     this.setState({editing: false});
   }
 
   remove(){
-    this.props.onRemove(this.props.index);
+    this.props.removeNote(this.props.index);
   }
-
   renderDisplay() {
     return (
       <div className="note" style={this.style}>
@@ -74,3 +74,12 @@ export default class Note extends Component {
     }
   }
 }
+
+Note.propTypes = {
+  addNote: React.PropTypes.func,
+  removeNote: React.PropTypes.func,
+  editNote: React.PropTypes.func,
+  index: React.PropTypes.number
+}
+
+export default connector(Note)
