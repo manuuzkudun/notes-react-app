@@ -3,9 +3,7 @@ import Note from './Note';
 import { connector , store} from '../store';
 
 class Board extends Component {
-
   componentWillMount() {
-    var self = this;
     if(this.props.count) {
       $.getJSON("https://baconipsum.com/api/?type=all-meat&sentences=" +
         this.props.count + "&start-with-lorem=1&callback=?", results => {
@@ -18,28 +16,27 @@ class Board extends Component {
   render() {
     return (
       <div className="board"> {
-        this.props.notes.map( (note, i) => {
-          return (
-            <Note key={note.id} index={note.id}>
-              {note.note}
-            </Note>
-          )
-        })
-      }
-      <button
-        onClick={this.props.addNote.bind(null,'New Note')}
-        className="btn btn-sm btn-success glyphicon glyphicon-plus" />
+        this.props.notes.map( note => (
+          <Note 
+            key={note.id}
+            id={note.id}
+            editable={note.editable}>
+            {note.note}
+          </Note>))}
+        <button
+          onClick={this.props.addNote.bind(null,'New Note')}
+          className="btn btn-sm btn-success glyphicon glyphicon-plus">
+        </button>
       </div>
     )
   }
+
 }
 
 Board.propTypes = {
   count: React.PropTypes.number.isRequired,
   notes: React.PropTypes.arrayOf(React.PropTypes.object),
-  addNote: React.PropTypes.func,
-  removeNote: React.PropTypes.func,
-  editNote: React.PropTypes.func
+  addNote: React.PropTypes.func
 }
 
 export default connector(Board)

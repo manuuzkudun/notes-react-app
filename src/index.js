@@ -6,6 +6,6 @@ import Board from './components/Board';
 
 ReactDOM.render(
   <Provider store={ store }>
-    <Board count={50}/>
+    <Board count={5}/>
   </Provider>
   , document.querySelector('#react-container'));

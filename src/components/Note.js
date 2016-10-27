@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
+import { findDOMNode } from 'react-dom';
 import { connector } from '../store';
 
 class Note extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      editing: false
-    };
-
     this.edit = this.edit.bind(this);
     this.save = this.save.bind(this);
     this.remove = this.remove.bind(this);
@@ -22,7 +18,7 @@ class Note extends Component {
   }
 
   componentDidMount() {
-    $(ReactDOM.findDOMNode(this)).draggable();
+    $(findDOMNode(this)).draggable();
   }
 
   componentWillMount() {
@@ -34,52 +30,55 @@ class Note extends Component {
   }
 
   edit(){
-    this.setState({editing: true});
+    this.props.setEditable(this.props.id);
   }
 
   save(){
-    this.props.editNote(this.props.index, ReactDOM.findDOMNode(this.refs.newText).value);
-    this.setState({editing: false});
+    this.props.editNote(this.props.id, findDOMNode(this.refs.newText).value);
   }
 
   remove(){
-    this.props.removeNote(this.props.index);
+    this.props.removeNote(this.props.id);
   }
+
   renderDisplay() {
     return (
       <div className="note" style={this.style}>
         <p>{this.props.children}</p>
         <span>
-          <button className="btn btn-primary glyphicon glyphicon-pencil" onClick={this.edit}/>
-          <button className="btn btn-danger glyphicon glyphicon-trash" onClick={this.remove}/>
+          <button onClick={this.edit}
+            className="btn btn-primary glyphicon glyphicon-pencil" />
+          <button onClick={this.remove}
+            className="btn btn-danger glyphicon glyphicon-trash" />
         </span>
       </div>
-    );
-  }
+  )}
 
   renderForm() {
     return(
       <div className="note" style={this.style}>
-        <textarea ref="newText" defaultValue={this.props.children} className="form-control"></textarea>
-        <button onClick={this.save} className="btn btn-success btn-sm glyphicon glyphicon-floppy-disk" />
+        <textarea ref="newText"
+          defaultValue={this.props.children}
+          className="form-control">
+        </textarea>
+        <button onClick={this.save}
+          className="btn btn-success btn-sm glyphicon glyphicon-floppy-disk" >
+        </button>
       </div>
-    );
-  }
+  )}
 
   render() {
-    if (this.state.editing){
-      return this.renderForm();
-    } else {
-      return this.renderDisplay();
-    }
+    return this.props.editable ? this.renderForm() : this.renderDisplay();
   }
+
 }
 
 Note.propTypes = {
-  addNote: React.PropTypes.func,
   removeNote: React.PropTypes.func,
   editNote: React.PropTypes.func,
-  index: React.PropTypes.number
+  setEditable: React.PropTypes.func,
+  id: React.PropTypes.number,
+  editable: React.PropTypes.bool
 }
 
 export default connector(Note)

@@ -1,6 +1,7 @@
 export const ADD_NOTE = 'ADD_NOTE';
 export const REMOVE_NOTE = 'REMOVE_NOTE';
 export const EDIT_NOTE = 'EDIT_NOTE';
+export const SET_EDITABLE = 'SET_EDITABLE';
 
 export function addNote(text) {
   return {
@@ -9,16 +10,23 @@ export function addNote(text) {
   };
 }
 
-export function removeNote(index) {
+export function removeNote(id) {
   return {
     type: REMOVE_NOTE,
-    payload: index
+    payload: id
   };
 }
 
-export function editNote(index, newText) {
+export function editNote(id, newText) {
   return {
     type: EDIT_NOTE,
-    payload: { index, newText }
+    payload: { id, newText }
+  };
+}
+
+export function setEditable(id) {
+  return {
+    type: SET_EDITABLE,
+    payload: id
   };
 }

@@ -1,6 +1,6 @@
 import { createStore } from 'redux';
 import { connect } from 'react-redux';
-import { addNote, removeNote, editNote } from './actions/index';
+import { addNote, removeNote, editNote, setEditable } from './actions/index';
 import notesReducer from './reducers/index';
 
 const store = createStore(notesReducer);
@@ -10,11 +10,14 @@ const mapDispatchToProps = (dispatch) => {
     addNote: (text) => {
       dispatch(addNote(text))
     },
-    removeNote: (index) => {
-      dispatch(removeNote(index))
+    removeNote: (id) => {
+      dispatch(removeNote(id))
     },
-    editNote: (index, newText) => {
-      dispatch(editNote(index, newText))
+    editNote: (id, newText) => {
+      dispatch(editNote(id, newText))
+    },
+    setEditable: (id) => {
+      dispatch(setEditable(id))
     }
   }
 }
