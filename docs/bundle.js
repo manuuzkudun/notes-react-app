@@ -63,23 +63,17 @@
 
 	var _reactRedux = __webpack_require__(160);
 
-	var _redux = __webpack_require__(167);
+	var _store = __webpack_require__(188);
 
-	var _Board = __webpack_require__(188);
+	var _Board = __webpack_require__(191);
 
 	var _Board2 = _interopRequireDefault(_Board);
 
-	var _reducers = __webpack_require__(190);
-
-	var _reducers2 = _interopRequireDefault(_reducers);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	var createStoreWithMiddleware = (0, _redux.applyMiddleware)()(_redux.createStore);
 
 	_reactDom2.default.render(_react2.default.createElement(
 	  _reactRedux.Provider,
-	  { store: createStoreWithMiddleware(_reducers2.default) },
+	  { store: _store.store },
 	  _react2.default.createElement(_Board2.default, { count: 50 })
 	), document.querySelector('#react-container'));
 
@@ -21523,6 +21517,151 @@
 
 	'use strict';
 
+	var _redux = __webpack_require__(167);
+
+	var _reactRedux = __webpack_require__(160);
+
+	var _index = __webpack_require__(189);
+
+	var _index2 = __webpack_require__(190);
+
+	var _index3 = _interopRequireDefault(_index2);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var store = (0, _redux.createStore)(_index3.default);
+	var mapStateToProps = function mapStateToProps(state) {
+	  return { notes: state.notes };
+	};
+	var mapDispatchToProps = function mapDispatchToProps(dispatch) {
+	  return {
+	    addNote: function addNote(text) {
+	      dispatch((0, _index.addNote)(text));
+	    },
+	    removeNote: function removeNote(id) {
+	      dispatch((0, _index.removeNote)(id));
+	    },
+	    editNote: function editNote(id, newText) {
+	      dispatch((0, _index.editNote)(id, newText));
+	    },
+	    setEditable: function setEditable(id) {
+	      dispatch((0, _index.setEditable)(id));
+	    }
+	  };
+	};
+
+	var connector = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps);
+
+	module.exports = { connector: connector, store: store };
+
+/***/ },
+/* 189 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.addNote = addNote;
+	exports.removeNote = removeNote;
+	exports.editNote = editNote;
+	exports.setEditable = setEditable;
+	var ADD_NOTE = exports.ADD_NOTE = 'ADD_NOTE';
+	var REMOVE_NOTE = exports.REMOVE_NOTE = 'REMOVE_NOTE';
+	var EDIT_NOTE = exports.EDIT_NOTE = 'EDIT_NOTE';
+	var SET_EDITABLE = exports.SET_EDITABLE = 'SET_EDITABLE';
+
+	function addNote(text) {
+	  return {
+	    type: ADD_NOTE,
+	    payload: text
+	  };
+	}
+
+	function removeNote(id) {
+	  return {
+	    type: REMOVE_NOTE,
+	    payload: id
+	  };
+	}
+
+	function editNote(id, newText) {
+	  return {
+	    type: EDIT_NOTE,
+	    payload: { id: id, newText: newText }
+	  };
+	}
+
+	function setEditable(id) {
+	  return {
+	    type: SET_EDITABLE,
+	    payload: id
+	  };
+	}
+
+/***/ },
+/* 190 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _redux = __webpack_require__(167);
+
+	var _index = __webpack_require__(189);
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+	var initialState = { notes: [] };
+
+	var generateId = function generateId() {
+	  return new Date().getTime();
+	};
+
+	function notesReducer() {
+	  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+	  var action = arguments[1];
+
+	  var notes = void 0;
+	  switch (action.type) {
+	    case _index.ADD_NOTE:
+	      return Object.assign({}, state, { notes: [].concat(_toConsumableArray(state.notes), [{ id: generateId(), note: action.payload, editable: false }]) });
+	    case _index.REMOVE_NOTE:
+	      return Object.assign({}, state, { notes: state.notes.filter(function (note) {
+	          return note.id !== action.payload;
+	        }) });
+	    case _index.EDIT_NOTE:
+	      return Object.assign({}, state, { notes: state.notes.map(function (note) {
+	          if (note.id === action.payload.id) {
+	            note.note = action.payload.newText;
+	            note.editable = false;
+	          }
+	          return note;
+	        }) });
+	    case _index.SET_EDITABLE:
+	      return Object.assign({}, state, { notes: state.notes.map(function (note) {
+	          if (note.id === action.payload) {
+	            note.editable = true;
+	          }
+	          return note;
+	        }) });
+	    default:
+	      return state;
+	  }
+	};
+
+	exports.default = notesReducer;
+
+/***/ },
+/* 191 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
@@ -21533,9 +21672,11 @@
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _Note = __webpack_require__(189);
+	var _Note = __webpack_require__(192);
 
 	var _Note2 = _interopRequireDefault(_Note);
+
+	var _store = __webpack_require__(188);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21548,75 +21689,24 @@
 	var Board = function (_Component) {
 	  _inherits(Board, _Component);
 
-	  function Board(props) {
+	  function Board() {
 	    _classCallCheck(this, Board);
 
-	    var _this = _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).call(this, props));
-
-	    _this.state = {
-	      notes: []
-	    };
-	    _this.add = _this.add.bind(_this);
-	    _this.update = _this.update.bind(_this);
-	    _this.remove = _this.remove.bind(_this);
-	    _this.eachNote = _this.eachNote.bind(_this);
-	    _this.nextId = _this.nextId.bind(_this);
-	    return _this;
+	    return _possibleConstructorReturn(this, (Board.__proto__ || Object.getPrototypeOf(Board)).apply(this, arguments));
 	  }
 
 	  _createClass(Board, [{
-	    key: 'nextId',
-	    value: function nextId() {
-	      this.uniqueId = this.uniqueId || 0;
-	      return this.uniqueId++;
-	    }
-	  }, {
 	    key: 'componentWillMount',
 	    value: function componentWillMount() {
-	      var self = this;
+	      var _this2 = this;
+
 	      if (this.props.count) {
 	        $.getJSON("https://baconipsum.com/api/?type=all-meat&sentences=" + this.props.count + "&start-with-lorem=1&callback=?", function (results) {
 	          results[0].split('. ').forEach(function (sentence) {
-	            return self.add(sentence.substring(0, 40));
+	            return _this2.props.addNote(sentence.substring(0, 40));
 	          });
 	        });
 	      }
-	    }
-	  }, {
-	    key: 'add',
-	    value: function add(text) {
-	      var arr = this.state.notes;
-	      arr.push({
-	        id: this.nextId(),
-	        note: text
-	      });
-	      this.setState(arr);
-	    }
-	  }, {
-	    key: 'update',
-	    value: function update(newText, i) {
-	      var arr = this.state.notes;
-	      arr[i].note = newText;
-	      this.setState({ notes: arr });
-	    }
-	  }, {
-	    key: 'remove',
-	    value: function remove(i) {
-	      var arr = this.state.notes;
-	      arr.splice(i, 1);
-	      this.setState({ notes: arr });
-	    }
-	  }, {
-	    key: 'eachNote',
-	    value: function eachNote(note, i) {
-	      return _react2.default.createElement(
-	        _Note2.default,
-	        { key: note.id,
-	          index: i,
-	          onChange: this.update,
-	          onRemove: this.remove },
-	        note.note
-	      );
 	    }
 	  }, {
 	    key: 'render',
@@ -21625,8 +21715,19 @@
 	        'div',
 	        { className: 'board' },
 	        ' ',
-	        this.state.notes.map(this.eachNote),
-	        _react2.default.createElement('button', { onClick: this.add.bind(null, 'New Note'), className: 'btn btn-sm btn-success glyphicon glyphicon-plus' })
+	        this.props.notes.map(function (note) {
+	          return _react2.default.createElement(
+	            _Note2.default,
+	            {
+	              key: note.id,
+	              id: note.id,
+	              editable: note.editable },
+	            note.note
+	          );
+	        }),
+	        _react2.default.createElement('button', {
+	          onClick: this.props.addNote.bind(null, 'New Note'),
+	          className: 'btn btn-sm btn-success glyphicon glyphicon-plus' })
 	      );
 	    }
 	  }]);
@@ -21635,19 +21736,15 @@
 	}(_react.Component);
 
 	Board.propTypes = {
-	  count: function count(props, propName) {
-	    if (typeof props[propName] !== 'number') {
-	      return new Error('The count property must be a number');
-	    }
-	    if (props[propName] > 100) {
-	      return new Error('Creating ' + props[propName] + ' notes is rdiculous');
-	    }
-	  }
+	  count: _react2.default.PropTypes.number.isRequired,
+	  notes: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.object),
+	  addNote: _react2.default.PropTypes.func
 	};
-	exports.default = Board;
+
+	exports.default = (0, _store.connector)(Board);
 
 /***/ },
-/* 189 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21664,7 +21761,7 @@
 
 	var _reactDom = __webpack_require__(159);
 
-	var _reactDom2 = _interopRequireDefault(_reactDom);
+	var _store = __webpack_require__(188);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21681,10 +21778,6 @@
 	    _classCallCheck(this, Note);
 
 	    var _this = _possibleConstructorReturn(this, (Note.__proto__ || Object.getPrototypeOf(Note)).call(this, props));
-
-	    _this.state = {
-	      editing: false
-	    };
 
 	    _this.edit = _this.edit.bind(_this);
 	    _this.save = _this.save.bind(_this);
@@ -21703,7 +21796,7 @@
 	  }, {
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      $(_reactDom2.default.findDOMNode(this)).draggable();
+	      $((0, _reactDom.findDOMNode)(this)).draggable();
 	    }
 	  }, {
 	    key: 'componentWillMount',
@@ -21717,18 +21810,17 @@
 	  }, {
 	    key: 'edit',
 	    value: function edit() {
-	      this.setState({ editing: true });
+	      this.props.setEditable(this.props.id);
 	    }
 	  }, {
 	    key: 'save',
 	    value: function save() {
-	      this.props.onChange(_reactDom2.default.findDOMNode(this.refs.newText).value, this.props.index);
-	      this.setState({ editing: false });
+	      this.props.editNote(this.props.id, (0, _reactDom.findDOMNode)(this.refs.newText).value);
 	    }
 	  }, {
 	    key: 'remove',
 	    value: function remove() {
-	      this.props.onRemove(this.props.index);
+	      this.props.removeNote(this.props.id);
 	    }
 	  }, {
 	    key: 'renderDisplay',
@@ -21744,8 +21836,10 @@
 	        _react2.default.createElement(
 	          'span',
 	          null,
-	          _react2.default.createElement('button', { className: 'btn btn-primary glyphicon glyphicon-pencil', onClick: this.edit }),
-	          _react2.default.createElement('button', { className: 'btn btn-danger glyphicon glyphicon-trash', onClick: this.remove })
+	          _react2.default.createElement('button', { onClick: this.edit,
+	            className: 'btn btn-primary glyphicon glyphicon-pencil' }),
+	          _react2.default.createElement('button', { onClick: this.remove,
+	            className: 'btn btn-danger glyphicon glyphicon-trash' })
 	        )
 	      );
 	    }
@@ -21755,47 +21849,32 @@
 	      return _react2.default.createElement(
 	        'div',
 	        { className: 'note', style: this.style },
-	        _react2.default.createElement('textarea', { ref: 'newText', defaultValue: this.props.children, className: 'form-control' }),
-	        _react2.default.createElement('button', { onClick: this.save, className: 'btn btn-success btn-sm glyphicon glyphicon-floppy-disk' })
+	        _react2.default.createElement('textarea', { ref: 'newText',
+	          defaultValue: this.props.children,
+	          className: 'form-control' }),
+	        _react2.default.createElement('button', { onClick: this.save,
+	          className: 'btn btn-success btn-sm glyphicon glyphicon-floppy-disk' })
 	      );
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      if (this.state.editing) {
-	        return this.renderForm();
-	      } else {
-	        return this.renderDisplay();
-	      }
+	      return this.props.editable ? this.renderForm() : this.renderDisplay();
 	    }
 	  }]);
 
 	  return Note;
 	}(_react.Component);
 
-	exports.default = Note;
+	Note.propTypes = {
+	  removeNote: _react2.default.PropTypes.func,
+	  editNote: _react2.default.PropTypes.func,
+	  setEditable: _react2.default.PropTypes.func,
+	  id: _react2.default.PropTypes.number,
+	  editable: _react2.default.PropTypes.bool
+	};
 
-/***/ },
-/* 190 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-
-	var _redux = __webpack_require__(167);
-
-	var rootReducer = (0, _redux.combineReducers)({
-	  state: function state() {
-	    var _state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-	    return _state;
-	  }
-	});
-
-	exports.default = rootReducer;
+	exports.default = (0, _store.connector)(Note);
 
 /***/ }
 /******/ ]);
