@@ -1,15 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import Note from './Note';
 import { connector , store} from '../store';
 
 class Board extends Component {
-  componentWillMount() {
+  componentDidMount() {
     if(this.props.count) {
-      $.getJSON("https://baconipsum.com/api/?type=all-meat&sentences=" +
-        this.props.count + "&start-with-lorem=1&callback=?", results => {
-          results[0].split('. ')
-            .forEach( sentence => this.props.addNote(sentence.substring(0,40)) )
-      });
+      this.props.fetchNotes(this.props.count);
     }
   }
 
@@ -17,7 +13,7 @@ class Board extends Component {
     return (
       <div className="board"> {
         this.props.notes.map( note => (
-          <Note 
+          <Note
             key={note.id}
             id={note.id}
             editable={note.editable}>
@@ -34,9 +30,10 @@ class Board extends Component {
 }
 
 Board.propTypes = {
-  count: React.PropTypes.number.isRequired,
-  notes: React.PropTypes.arrayOf(React.PropTypes.object),
-  addNote: React.PropTypes.func
+  count: PropTypes.number.isRequired,
+  notes: PropTypes.arrayOf(React.PropTypes.object),
+  addNote: PropTypes.func,
+  fetchNotes: PropTypes.func
 }
 
 export default connector(Board)

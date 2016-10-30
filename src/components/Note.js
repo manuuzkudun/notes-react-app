@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { TwitterPicker } from 'react-color';
 import { findDOMNode } from 'react-dom';
 import { connector } from '../store';
 

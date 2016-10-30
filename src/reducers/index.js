@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
-import { ADD_NOTE, REMOVE_NOTE, EDIT_NOTE, SET_EDITABLE } from '../actions/index';
+import { ADD_NOTE, REMOVE_NOTE, EDIT_NOTE, SET_EDITABLE, FETCH_NOTES } from '../actions/index';
 const initialState = {notes: []}
 
 const generateId = () => {
-  return new Date().getTime();
+  return Math.floor((Math.random() * 1000000000000000) + 1);
 };
 
 function notesReducer(state = initialState, action) {
@@ -33,6 +33,15 @@ function notesReducer(state = initialState, action) {
         }
         return note;
       })})
+    case FETCH_NOTES:
+      const sentences = action.payload.data[0].split('. ')
+        .map( (sentence) => {
+          return {
+            id: generateId(),
+            note: sentence.substring(0,40),
+            editable: false
+          }});
+      return Object.assign({}, state, { notes: sentences });
     default:
       return state;
   }
